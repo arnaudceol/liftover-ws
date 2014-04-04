@@ -34,7 +34,7 @@
                             <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
-                                    <wsdl>http://37.34.38.126:8080/liftover-ws/LiftOverService?wsdl</wsdl>
+                                    <wsdl>http://localhost:8080/liftover-ws/LiftOverService?wsdl</wsdl>
                                     <extraargs>
                                         <extraarg>-client</extraarg>
                                     </extraargs>
