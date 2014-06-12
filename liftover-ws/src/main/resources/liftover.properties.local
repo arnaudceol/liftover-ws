@@ -1,4 +1,4 @@
 liftOverCommand=liftOver
-liftOverPath=/opt/cluster/bin/
+liftOverPath=/home/aceol/Programs/liftOver
 mapChainDir=/home/aceol/data/liftOver/
 tmpDir=/tmp/liftOver/

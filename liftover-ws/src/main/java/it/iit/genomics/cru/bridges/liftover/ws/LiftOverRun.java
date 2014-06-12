@@ -34,12 +34,12 @@ import org.apache.commons.lang.RandomStringUtils;
 
 public class LiftOverRun {
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("liftover.properties");
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("/liftover");
 
 	public static Mapping runLiftOver(String genome, String fromAssembly,
 			String toAssembly, String chromosome, int start, int end) {
 		
-		String liftOverCommand = RESOURCE_BUNDLE.getString("liftOver");
+		String liftOverCommand = RESOURCE_BUNDLE.getString("liftOverCommand");
 
 		String liftOverPath = RESOURCE_BUNDLE.getString("liftOverPath");
 
@@ -58,7 +58,7 @@ public class LiftOverRun {
 		String outputFilename = rootFilename + "-" + toAssembly + ".bed";
 		String unmappedFilename = rootFilename + "-" + "unmapped.bed";
 		
-		String mapChain = fromAssembly.toLowerCase() + "ToH" + toAssembly.toLowerCase().substring(1) + ".over.chain.gz";
+		String mapChain = fromAssembly.toLowerCase() + "To" + toAssembly.toUpperCase().charAt(0)+ toAssembly.toLowerCase().substring(1) + ".over.chain.gz";
 
 		try {
 
