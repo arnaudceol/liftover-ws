@@ -13,7 +13,7 @@ public class AssemblyUtils {
 			.getBundle("/liftover");
 
 	private static final ResourceBundle SYNOMYMS_BUNDLE = ResourceBundle
-			.getBundle("/synomyns");
+			.getBundle("/synonyms");
 
 	private static AssemblyUtils instance;
 
@@ -21,10 +21,12 @@ public class AssemblyUtils {
 
 		// load synonyms
 		for (String assembly: SYNOMYMS_BUNDLE.keySet()) {
-			ArrayList<String> synonyms = new ArrayList<String>();
-			synonyms.addAll(Arrays.asList(SYNOMYMS_BUNDLE.getString(assembly).split(",")));
+			ArrayList<String> assemblySynonyms = new ArrayList<String>();
+			assemblySynonyms.addAll(Arrays.asList(SYNOMYMS_BUNDLE.getString(assembly).split(",")));
+			synomyms.put(assembly, assemblySynonyms);
 		}
 
+		
 		// load mappings 
 		String mapChainDirectory = RESOURCE_BUNDLE.getString("mapChainDir");
 		File directory = new File(mapChainDirectory);
@@ -41,7 +43,7 @@ public class AssemblyUtils {
 				String to = mappingFile.split("To")[1].toLowerCase();		
 						
 				String[] mapping = {from, to}; 
-				mappings.add(mapping);
+				availableConvertions.add(mapping);
 			}		
 		}
 	}
@@ -56,17 +58,17 @@ public class AssemblyUtils {
 
 	private HashMap<String, Collection<String>> synomyms = new HashMap<String, Collection<String>>();
 	
-	private ArrayList<String[]> mappings = new ArrayList<String[]>();
+	private ArrayList<String[]> availableConvertions = new ArrayList<String[]>();
 
-	public ArrayList<String[]> getMappings() {
-		return mappings;
+	public ArrayList<String[]> getAvailableConvertions() {
+		return availableConvertions;
 	}
 
-	public String getAssemblyName(String assembly) {
+	public String getAssemblyBySynonym(String synonym) {
 		
-		for (String mainAssemblyName : synomyms.keySet()) {
-			if (synomyms.get(mainAssemblyName).contains(assembly)) {
-				return mainAssemblyName;
+		for (String assembly : synomyms.keySet()) {
+			if (synomyms.get(assembly).contains(synonym)) {
+				return assembly;
 			}
 		}
 		return null;
@@ -74,24 +76,24 @@ public class AssemblyUtils {
 
 	public boolean areSynonyms(String assemblyName1, String assemblyName2) {
 		
-		String mainName1 = getAssemblyName(assemblyName1);
-		String mainName2 = getAssemblyName(assemblyName2);
+		String mainName1 = getAssemblyBySynonym(assemblyName1);
+		String mainName2 = getAssemblyBySynonym(assemblyName2);
 		
 		return mainName1 != null && mainName2 != null && mainName1.equals(mainName2);
 	}
 
-	public Collection<String> getSynonyms(String assemblyName) {
+	public Collection<String> getSynonyms(String synonym) {
 
-		for (String mainAssemblyName : synomyms.keySet()) {
-			if (synomyms.get(mainAssemblyName).contains(assemblyName)) {
-				return synomyms.get(mainAssemblyName);
+		for (String assembly : synomyms.keySet()) {
+			if (synomyms.get(assembly).contains(synonym)) {
+				return synomyms.get(assembly);
 			}
 		}
 		return null;
 	}
 
-	public boolean isMappable(String sourceAssembly, String targetAssembly) {
-		for (String[] assemblies : mappings) {
+	public boolean isConvertible(String sourceAssembly, String targetAssembly) {
+		for (String[] assemblies : availableConvertions) {
 			if (sourceAssembly.equals(assemblies[0])
 					&& targetAssembly.equals(assemblies[1])) {
 				return true;

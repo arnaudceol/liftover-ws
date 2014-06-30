@@ -16,14 +16,13 @@
 package it.iit.genomics.cru.bridges.liftover.ws;
 
 import java.util.Collection;
-import java.util.ResourceBundle;
 
 import javax.jws.WebMethod;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
 /**
- * 
+ * 	
  * @author Arnaud Ceol arnaud.ceol@iit.it
  *
  */
@@ -37,9 +36,16 @@ public class LiftOver {
 	}
 	
 	@WebMethod	
-	@WebResult(name="availableMappings")
-	public Collection<String[]> getAvailableMapping() {
-		return AssemblyUtils.getInstance().getMappings();
+	@WebResult(name="availableConvertions")
+	public Collection<String[]> getAvailableConvertions() {
+		return AssemblyUtils.getInstance().getAvailableConvertions();
+	}
+	
+	
+	@WebMethod	
+	@WebResult(name="assemblyBySynonym")
+	public String getAssemblyBySynonym(String synonym) {
+		return AssemblyUtils.getInstance().getAssemblyBySynonym(synonym);
 	}
 	
 	
