@@ -1,0 +1,4 @@
+liftOverCommand=liftOver
+liftOverPath=/Users/arnaudceol/Programs/liftOver
+mapChainDir=/Users/arnaudceol/data/liftOver/
+tmpDir=/tmp/liftOver/
