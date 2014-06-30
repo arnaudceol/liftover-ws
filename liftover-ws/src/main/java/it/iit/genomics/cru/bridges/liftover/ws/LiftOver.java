@@ -15,6 +15,9 @@
  ******************************************************************************/
 package it.iit.genomics.cru.bridges.liftover.ws;
 
+import java.util.Collection;
+import java.util.ResourceBundle;
+
 import javax.jws.WebMethod;
 import javax.jws.WebResult;
 import javax.jws.WebService;
@@ -29,8 +32,16 @@ import javax.jws.WebService;
 public class LiftOver {
 	
 	public LiftOver() {
-		
+		// Init
+		AssemblyUtils.getInstance();
 	}
+	
+	@WebMethod	
+	@WebResult(name="availableMappings")
+	public Collection<String[]> getAvailableMapping() {
+		return AssemblyUtils.getInstance().getMappings();
+	}
+	
 	
 	@WebMethod	
 	@WebResult(name="mapping")
