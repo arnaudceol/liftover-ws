@@ -50,6 +50,12 @@ public class LiftOver {
 	
 	
 	@WebMethod	
+	@WebResult(name="synonym")
+	public Collection<String> getSynonyms(String assembly) {
+		return AssemblyUtils.getInstance().getSynonyms(assembly);
+	}
+	
+	@WebMethod	
 	@WebResult(name="mapping")
 	public Mapping getMapping(String genome, String fromAssembly,
 			String toAssembly, String chromosome, int start, int end) {
