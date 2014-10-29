@@ -19,10 +19,10 @@ import it.iit.genomics.cru.bridges.liftover.ws.LiftOver;
 import it.iit.genomics.cru.bridges.liftover.ws.LiftOverService;
 import it.iit.genomics.cru.bridges.liftover.ws.Mapping;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import javax.xml.ws.BindingProvider;
 
 import net.java.dev.jaxb.array.StringArray;
 
@@ -33,18 +33,36 @@ import net.java.dev.jaxb.array.StringArray;
  */
 public class LiftOverClient {
 
-	LiftOver port;
+	private LiftOver port;
 
+	private ArrayList<String[]> availableConvertions;
+	
 	public LiftOverClient() {
 		LiftOverService service = new LiftOverService();
 		port = service.getLiftOverPort();
+		
+		availableConvertions = new ArrayList<String[]>();
+		
+		for (StringArray mappingArray : port.getAvailableConvertions()) {
+			availableConvertions.add(mappingArray.getItem().toArray(new String[2]));
+		}
+		
 	}
 
-	public LiftOverClient(String endPointURL) {
-		LiftOverService service = new LiftOverService();
+	public LiftOverClient(String endPointURL) throws MalformedURLException {
+		LiftOverService service = new LiftOverService(new URL(endPointURL));
+		
 		port = service.getLiftOverPort();
-		((BindingProvider) port).getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endPointURL);
+//		
+//		((BindingProvider) port).getRequestContext().put(
+//				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endPointURL);
+		
+		availableConvertions = new ArrayList<String[]>();
+		
+		for (StringArray mappingArray : port.getAvailableConvertions()) {
+			availableConvertions.add(mappingArray.getItem().toArray(new String[2]));
+		}
+		
 	}
 
 	public Mapping getMapping(String genome, String fromAssembly,
@@ -54,29 +72,41 @@ public class LiftOverClient {
 	}
 
 	public Collection<String[]> getAvailableConvertions() {
-		ArrayList<String[]> mappings = new ArrayList<String[]>();
-
-		for (StringArray mappingArray : port.getAvailableConvertions()) {
-			mappings.add(mappingArray.getItem().toArray(new String[2]));
-		}
-		return mappings;
+		return availableConvertions;
 	}
 
+
+	public boolean isConvertionAvailable(String sourceAssembly, String targetAssembly) {
+		for (String[] mapping : getAvailableConvertions()) {
+			if (mapping[0].equals(sourceAssembly) && mapping[1].equals(targetAssembly)) {
+				return true;
+			}
+		}
+		return false;
+	}	
+	
 	public String getAssemblyBySynonym(String synonym) {
 		return port.getAssemblyBySynonym(synonym);
 	}
+	
+
+	public Collection<String> getSynonyms(String assembly) {
+		return port.getSynonyms(assembly);
+	}
+	
 
 	public static void main(String[] args) throws Exception {
-		LiftOverClient client = new LiftOverClient();
-
+		LiftOverClient client = new LiftOverClient("http://37.34.38.126:8080/liftover-ws/LiftOverService?wsdl");
+				
 		System.out.println("GRCh38: " + client.getAssemblyBySynonym("GRCh38"));
+		System.out.println("GRCh37: " + client.getAssemblyBySynonym("GRCh37"));
 
 		for (String[] mapping : client.getAvailableConvertions()) {
 			System.out.println(mapping[0] + "->" + mapping[1]);
 		}
 
-		Mapping mapping = client.getMapping("Human", "hg19", "hg38", "chr7",
-				150648737, 150648738);
+		Mapping mapping = client.getMapping("Human", "hg19", "hg18", "chr1",
+				44474106, 44474107);
 
 		System.out.println("lift over: " + mapping.getChromosome() + " "
 				+ mapping.getStart() + " " + mapping.getEnd());
